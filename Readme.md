@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ольга Миронова](https://up.htmlacademy.ru/javascript/21/user/1307951).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Зольников](https://htmlacademy.ru/profile/id870391).
 
 ---
 
