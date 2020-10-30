@@ -20,7 +20,7 @@ const PIN_Y = Number.parseInt(document.querySelector(`.map__pin--main`).style.to
 let pinTemplate = document.querySelector(`#pin`).content;
 let cardTemplate = document.querySelector(`#card`).content;
 
-let activeElements = `.map__filters select, .map__filters input, .ad-form input, .ad-form select, .ad-form textarea, .ad-form button`;
+let activeElements = `.map__filters select, .map__filters input, .ad-form, .ad-form input, .ad-form select, .ad-form textarea, .ad-form button`;
 let mapPinMain = document.querySelector(`.map__pin--main`);
 
 let capacity = document.querySelector(`#capacity`);
@@ -169,11 +169,19 @@ let toggleActiveElements = function (selectingElements, condition) {
 
   if (condition) {
     elementsArray.forEach((element) => {
-      element.setAttribute(`disabled`, `disabled`);
+      if (element.classList.contains(`ad-form`) && !element.classList.contains(`ad-form--disabled`)) {
+        element.classList.add(`ad-form--disabled`);
+      } else {
+        element.setAttribute(`disabled`, `disabled`);
+      }
     });
   } else {
     elementsArray.forEach((element) => {
-      element.removeAttribute(`disabled`, `disabled`);
+      if (element.classList.contains(`ad-form--disabled`)) {
+        element.classList.remove(`ad-form--disabled`);
+      } else {
+        element.removeAttribute(`disabled`, `disabled`);
+      }
     });
   }
 };
@@ -182,15 +190,6 @@ let enableElementsListener = function (evt) {
   if (evt.button === 0 || evt.key === `Enter`) {
     toggleActiveElements(activeElements, false);
   }
-};
-
-let setAddress = function (x, y) {
-  document.querySelector(`#address`).value = `${x}, ${y}`;
-};
-
-let activateFormScreen = function (evt) {
-  enableElementsListener(evt);
-  setAddress(PIN_X + PIN_SHIFT_X, PIN_Y + PIN_SHIFT_Y);
 };
 
 let checkValidCapacity = function () {
@@ -204,6 +203,13 @@ let checkValidCapacity = function () {
     capacity.setCustomValidity(``);
   }
   capacity.reportValidity();
+};
+
+let launchPage = function (evt) {
+  document.querySelector(`.map`).classList.remove(`map--faded`);
+  document.querySelector(`#address`).value = `${PIN_X + PIN_SHIFT_X}, ${PIN_Y + PIN_SHIFT_Y}`;
+  renderPins();
+  enableElementsListener(evt);
 };
 
 // let onPopupClose = function (evt) {
@@ -220,23 +226,22 @@ let checkValidCapacity = function () {
 // let popupClose = function (popupButtonClose) {
 //   popupButtonClose.parentElement.classList.add(`hidden`);
 // };
+
 // ---------- Run ------------
-document.querySelector(`.map`).classList.remove(`map--faded`);
 
 getObjectsDataArray();
-renderPins();
-// ------------------------------
-
-
 toggleActiveElements(activeElements, true);
 document.querySelector(`#address`).setAttribute(`placeholder`, `${PIN_X}, ${PIN_Y}`);
+// ------------------------------
+// launchPage();
 
-mapPinMain.addEventListener(`mousedown`, activateFormScreen, true);
-mapPinMain.addEventListener(`keydown`, activateFormScreen, true);
+mapPinMain.addEventListener(`mousedown`, launchPage, true);
+mapPinMain.addEventListener(`keydown`, launchPage, true);
 
 // check room number
 
 capacity.addEventListener(`change`, checkValidCapacity, false);
+roomNumber.addEventListener(`change`, checkValidCapacity, false);
 
 renderCard();
 
